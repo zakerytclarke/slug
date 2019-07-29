@@ -1,0 +1,222 @@
+<script src="https://zclarke.xyz/threadpool.js/index.js"></script>
+<script type="text/javascript">
+
+//  var threadpool=new ThreadPool();
+
+  var code=`
+  stdio={
+    println(arg)={
+      JSEVAL("console.log"+"("+arg+")");
+    }
+  }
+
+  factorial(n)={
+    n*factorial(n-1);
+  }
+  factorial(1)={1};
+
+  stdio.println(factorial(10));
+  `;
+
+  Slug(code);
+
+
+  function Slug(input){
+/*
+    code={
+      "factorial(n)":{
+        "return":"n*factorial(n-1)"
+      },
+      "factorial(1)":{
+        "return":"1"
+      },
+      "return":"stdio.println(factorial(10))"
+    };
+*/
+    code={
+      "factorial(n)":{
+        "return":"n*factorial(n-1)"
+      },
+      "factorial(1)":{
+        "return":"1"
+      },
+      "return":"(a+b)*10"
+    };
+
+    addParent(code);
+    execute(code)
+
+  }
+
+
+  function execute(json){
+    if(json.return!=null){
+      parse(json.return);
+    }
+  }
+
+
+  function parse(code){
+    //var symbols=[","," ",";","(",")","+","-","*","/","=","==","!=",">","<",">=","<="];
+    var symbols=["(",")","*","/","+","-",","];
+    var lexical=[];
+
+    //Parse into symbols
+    var ptr=0;
+    for(let i=0;i<code.length;i++){
+      for(let j=0;j<symbols.length;j++){
+        if(code[i]==symbols[j]){
+          lexical.push(code.substring(ptr,i));
+          lexical.push(symbols[j]);
+          ptr=i+1;
+        }
+      }
+    }
+    lexical.push(code.substring(ptr));
+    //Remove empties
+    lexical=lexical.filter(function(x){
+      if(x==""||x==","){
+        return false;
+      }else{
+        return true;
+      }
+    });
+
+    //Convert to Stack Representation
+
+    lexical=infixToPostfix(lexical);
+    console.log(run(lexical));
+
+
+
+    function run(code){
+      var stack=[];
+      code.reverse();
+
+      while(code.length>0){
+        var temp=code.pop();
+        if(!isNaN(temp)){//Number
+          stack.push(parseInt(temp));
+        }else
+        if(symbols.indexOf(temp)!=-1){//Operator
+          runEval(temp);
+        }else{
+          stack.push(1);
+        }
+      }
+      return stack[0];
+
+
+      function runEval(op){
+        switch(op){
+          case "+":
+            var arg1=stack.pop();
+            var arg2=stack.pop();
+            stack.push(arg1+arg2);
+          break;
+          case "-":
+            var arg1=stack.pop();
+            var arg2=stack.pop();
+            stack.push(arg1-arg2);
+          break;
+          case "*":
+            var arg1=stack.pop();
+            var arg2=stack.pop();
+            stack.push(arg1*arg2);
+          break;
+          case "/":
+            var arg1=stack.pop();
+            var arg2=stack.pop();
+            stack.push(arg1/arg2);
+          break;
+
+          default:
+
+        }
+      }
+    }
+
+    function infixToPostfix(expr){
+      var out=[];
+      var stack=[];
+      for(let i=0;i<expr.length;i++){
+        if(symbols.indexOf(expr[i])==-1){//Operand
+          out.push(expr[i]);
+        }else{//Operator
+          if(expr[i]=="("){
+            stack.push("(")
+          }else
+          if(expr[i]==")"){
+            var temp=stack.pop();
+            while(temp!="("){
+              out.push(temp);
+              temp=stack.pop();
+            }
+          }else{
+            if(
+              stack.length==0||
+              stack.includes("(")||
+              precedence(expr[i])<precedence(stack[stack.length-1])
+            ){
+              stack.push(expr[i]);
+            }else{
+              while(
+                stack.length>0&&
+                stack[stack.length-1]!="("&&
+                precedence(expr[i])>=precedence(stack[stack.length-1])
+              ){
+                out.push(stack.pop());
+              }
+              stack.push(expr[i]);
+            }
+          }
+        }
+
+      }
+      while(stack.length>0){
+        out.push(stack.pop());
+      }
+
+      return out;
+
+      function precedence(symbol){
+          return symbols.indexOf(symbol);
+      }
+    }
+
+  }
+
+
+
+
+
+  function Tree(val){
+    this.value=val;
+    this.children=[];
+    this.addChild=function(val){
+      this.children.push(val);
+    }
+  }
+
+  function addParent(json,parent){
+    if(parent!=null){
+      json.parent=parent;
+    }else{
+      json.parent=null;
+    }
+    for(var key in json){
+      if(key!="return"&&key!="parent"){
+        addParent(json[key],json);
+      }
+    }
+
+  }
+
+
+  function replaceAll(str,oldStr,newStr){
+    while(str.indexOf(oldStr)!=-1){
+      str=str.replace(oldStr,newStr);
+    }
+    return str;
+  }
+</script>

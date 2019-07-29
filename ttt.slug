@@ -1,0 +1,75 @@
+/* Tic-Tac-Toe
+ *
+ *
+ */
+
+ Game={
+  turn="X";
+  board=[null,null,null,null,null,null,null,null,null];
+ }
+
+
+ game=Game;
+ ai=AI;
+
+
+humanPlay(loc)={
+  playMove(loc);
+  ai.play();
+}
+
+
+
+
+playMove(loc)={
+  game.board[loc]=turn;
+}
+
+checkWin(board)={
+  if(board[0]==board[1]==board[2]){
+    return board[0];
+  }
+  if(board[0]==board[1]==board[2]){
+    return board[0];
+  }
+}
+
+
+AI={
+  play={
+    arr=[];
+    for(var i=0;i<9;i++){
+      if(board[i]==" "){
+        arr[i]==minimax()
+      }
+    }
+  }
+  minimax(board)={
+    if(checkWin(board)=="O"){
+      return 1;
+    }
+    if(checkWin(board)=="X"){
+      return -1;
+    }
+    if(checkWin(board)=="O"){
+      return 1;
+    }
+  }
+}
+
+
+
+plusOne=addfn(1);
+
+x=plusOne(10)
+
+
+
+
+
+
+addfn(n)={
+  return=(m)={
+    return=n+m;
+  }
+}
