@@ -143,6 +143,9 @@ var oldRoot=root;
 root=convertStacktoTree(oldRoot);
 var oldRoot=root;
 root=treeOrdering(oldRoot);
+var oldRoot=root;
+root=inlineSwapping(oldRoot);
+
 assignParent(root);
 console.log("***********************************");
 root.view();
@@ -230,6 +233,29 @@ function removeNulls(current){
 }
 
 
+
+function inlineSwapping(current){
+  console.log(current);
+
+  var outTree=new Tree(current.value);
+  if(inline.indexOf(outTree.value)!=-1){
+    for(var i=current.children.length-1;i>=0;i--){
+      console.log(i);
+      outTree.add(current.children[i]);
+    }
+  }else{
+    for(var i=0;i<current.children.length;i++){
+      console.log(i);
+      outTree.add(current.children[i]);
+    }
+  }
+
+  for(var i=0;i<outTree.children.length;i++){
+    outTree.children[i]=inlineSwapping(outTree.children[i]);
+  }
+
+  return outTree;
+}
 
 function treeOrdering(current){
   var outTree=new Tree(current.value);
