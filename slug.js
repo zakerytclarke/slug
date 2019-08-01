@@ -141,6 +141,8 @@ var oldRoot=root;
 root=removeNulls(oldRoot);//Trim uncessary grouping
 var oldRoot=root;
 root=convertStacktoTree(oldRoot);
+var oldRoot=root;
+root=treeOrdering(oldRoot);
 assignParent(root);
 console.log("***********************************");
 root.view();
@@ -229,12 +231,44 @@ function removeNulls(current){
 
 
 
+function treeOrdering(current){
+  var outTree=new Tree(current.value);
+  for(var i=0;i<current.children.length;i++){
+    current.children[i]=treeOrdering(current.children[i]);
+  }
+
+
+  var stack=[];
+  var out=[];
+
+  for(var i=0;i<current.children.length;i++){
+    if(inline.indexOf(current.children[i].value)!=-1){
+      console.log("Operator");
+      var temp=current.children[i];
+      while(temp.children.length<2){
+        temp.add(stack.pop());
+      }
+      stack.push(temp);
+    }else{
+      stack.push(current.children[i]);
+    }
+  }
+
+for(var i=0;i<stack.length;i++){
+  outTree.add(stack[i]);
+  stack[i].view();
+}
+
+  return outTree;
+
+}
+
+
 function convertStacktoTree(current){
   var stack=[];
   var out=[];
 
   for(var i=0;i<current.children.length;i++){
-    console.log(i+":"+current.children[i].value);
 
     if(inline.indexOf(current.children[i].value)==-1){
       out.push(current.children[i]);
@@ -260,16 +294,41 @@ function convertStacktoTree(current){
   while(stack.length>0){
     out.push(stack.pop());
   }
-  for(var i=0;i<out.length;i++){
 
-    console.log(out[i].value);
-  }
+
+
 
   var outTree=new Tree(current.value);
+
+  /*
+
+  //Create Tree
+  for(var i=0;i<out.length;i++){
+    if(inline.indexOf(out[i])!=-1){
+      var temp=out[i];
+      while(temp.children.length<2){
+        var args=stack.pop();
+        console.log(":",args);
+        temp.add(args);
+      }
+      stack.push(temp);
+    }else{
+      stack.push(out[i]);
+    }
+  }
+
+for(var i=0;i<stack.length;i++){
+  outTree.add(stack[i]);
+}
+*/
+
+
 
   for(var i=0;i<out.length;i++){
     outTree.add(out[i]);
   }
+
+
 
 
   for(var i=0;i<outTree.children.length;i++){
