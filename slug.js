@@ -37,7 +37,7 @@ return [1];
 }
 `;
 */
-/*
+
 var code=`
 if(n>=10){
 return 10;
@@ -45,11 +45,11 @@ return 10;
 return 10-n*5;
 }
 `;
-*/
+
 var separators=[" ","\n","\t","\r",";",",","else"];
 var blocks=["(",")","[","]","{","}"];
 var functions=["if"];
-var inline=["==",">=","<=",">","<","!=","=","++","^","*","/","+","-",":="];//Lower Index = Higher Prioriy
+var inline=["++","^","*","/","+","-","::","==",">=","<=",">","<","!=","="];//Lower Index = Higher Prioriy
 var symbols=separators.concat(blocks.concat(inline));
 
 //Check for longest symbols first
@@ -140,15 +140,37 @@ root=pairFunctions(oldRoot);//Pair Functions with arguments
 var oldRoot=root;
 root=removeNulls(oldRoot);//Trim uncessary grouping
 var oldRoot=root;
-root=convertStacktoTree(oldRoot);
+root=convertStacktoTree(oldRoot);//Organize Inline args in stack
 var oldRoot=root;
-root=treeOrdering(oldRoot);
+root=treeOrdering(oldRoot);//Pairs stack to tree
 var oldRoot=root;
-root=inlineSwapping(oldRoot);
+root=inlineSwapping(oldRoot);//Swaps inline args to get correct order
+var oldRoot=root;
+root=removeRedundantNulls(oldRoot);//Removes unessecary nulls and return statements
 
 assignParent(root);
 console.log("***********************************");
 root.view();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function eval(current){
+
+}
+
+
+
 
 
 function Tree(value){
@@ -212,6 +234,29 @@ function pairFunctions(current){
   return out;
 }
 
+
+function removeRedundantNulls(current){
+  if(current.value=="null"){
+    if(current.children.length==1){
+      return removeRedundantNulls(current.children[0]);
+    }else
+    if(current.children[0].value=="return"){
+        return removeRedundantNulls(current.children[1]);
+    }else{
+      for(var i=0;i<current.children.length;i++){
+        current.children[i]=removeRedundantNulls(current.children[i]);
+      }
+      return current;
+    }
+
+  }else{
+    for(var i=0;i<current.children.length;i++){
+      current.children[i]=removeRedundantNulls(current.children[i]);
+    }
+    return current;
+  }
+
+}
 
 function removeNulls(current){
   var out=new Tree(current.value);
