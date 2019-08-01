@@ -3,7 +3,7 @@ var code=
 `
 stdio.println(test(5));
 
-test(n)={
+test(n):={
   stdio.println(n);
   if(n>=10){
     stdio.println("test"+"1");
@@ -14,41 +14,42 @@ test(n)={
   }
 };
 
-add(b,c)={
+add(b,c):={
   return(b+c);
 };
 
 `;
 
 
-var code="1+2*3/(5-4)"
+var code="x:=1+2*3/(5-4)";
+
 /*
 var code=
 `
 stdio.println(generate(10)[ 1 ]);
 
 generate(n)={
-  if(n>1){
-    return [n]++generate(n-1);
-  }else{
-    return [1];
-  }
+if(n>1){
+return [n]++generate(n-1);
+}else{
+return [1];
+}
 }
 `;
 */
 /*
 var code=`
 if(n>=10){
-  return 10;
+return 10;
 }else{
-  return 10-n*5;
+return 10-n*5;
 }
 `;
 */
 var separators=[" ","\n","\t","\r",";",",","else"];
 var blocks=["(",")","[","]","{","}"];
 var functions=["if"];
-var inline=[":=","==",">=","<=",">","<","!=","=","++","^","*","/","+","-"];//Lower Index = Higher Prioriy
+var inline=["==",">=","<=",">","<","!=","=","++","^","*","/","+","-",":="];//Lower Index = Higher Prioriy
 var symbols=separators.concat(blocks.concat(inline));
 
 //Check for longest symbols first
@@ -132,16 +133,14 @@ for(var i=0;i<lexical.length;i++){
   }
 }
 
-console.log(lexical);
 
 
-root.view();
 var oldRoot=root;
 root=pairFunctions(oldRoot);//Pair Functions with arguments
 var oldRoot=root;
 root=removeNulls(oldRoot);//Trim uncessary grouping
 var oldRoot=root;
-//root=convertStacktoTree(oldRoot);
+root=convertStacktoTree(oldRoot);
 assignParent(root);
 console.log("***********************************");
 root.view();
@@ -171,7 +170,7 @@ function Tree(value){
       out+=" ";
     }
     out+="|_";
-      console.log(out+this.value);
+    console.log(out+this.value);
 
     for(var i=0;i<this.children.length;i++){
       this.children[i].view(height+1);
@@ -189,7 +188,7 @@ function pairFunctions(current){
     if(temp.value=="null"){
       if(out.children.length>0){
         if(out.children[out.children.length-1].value=="null"){
-            out.add(temp);
+          out.add(temp);
         }else{
           out.children[out.children.length-1].add(temp)
         }
@@ -235,8 +234,8 @@ function convertStacktoTree(current){
   var out=[];
 
   for(var i=0;i<current.children.length;i++){
-    console.log(out);
-    console.log("*******************");
+    console.log(i+":"+current.children[i].value);
+
     if(inline.indexOf(current.children[i].value)==-1){
       out.push(current.children[i]);
     }else
@@ -251,14 +250,20 @@ function convertStacktoTree(current){
         inline.indexOf(current.children[i].value)>=inline.indexOf(stack[stack.length-1].value)
       ){
         out.push(stack.pop());
+        out.push(current.children[i]);
       }
     }
   }
 
 
-    while(stack.length>0){
-      out.push(stack.pop());
-    }
+
+  while(stack.length>0){
+    out.push(stack.pop());
+  }
+  for(var i=0;i<out.length;i++){
+
+    console.log(out[i].value);
+  }
 
   var outTree=new Tree(current.value);
 
@@ -268,7 +273,7 @@ function convertStacktoTree(current){
 
 
   for(var i=0;i<outTree.children.length;i++){
-    outTree.children[i]==convertStacktoTree(outTree.children[i]);
+    outTree.children[i]=convertStacktoTree(outTree.children[i]);
   }
   outTree.view();
   return outTree;
