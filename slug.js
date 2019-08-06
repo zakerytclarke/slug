@@ -21,7 +21,10 @@ add(b,c):={
 `;
 
 
-var code="x:=1+2*3/(5-4)";
+var code=`
+stdio.println(x);
+x :=1+2*3/(5-4);
+`;
 
 /*
 var code=
@@ -37,7 +40,7 @@ return [1];
 }
 `;
 */
-
+/*
 var code=`
 if(n>=10){
 return 10;
@@ -45,7 +48,7 @@ return 10;
 return 10-n*5;
 }
 `;
-
+*/
 var separators=[" ","\n","\t","\r",";",",","else"];
 var blocks=["(",")","[","]","{","}"];
 var functions=["if"];
@@ -71,7 +74,7 @@ while(i<code.length){
       lexical.push(code.substring(p,i));
       lexical.push(symbols[j]);
       p=i+symbols[j].length;
-      i+=symbols[j].length;
+      i+=symbols[j].length-1;
       break;
     }
   }
@@ -149,7 +152,6 @@ var oldRoot=root;
 root=removeRedundantNulls(oldRoot);//Removes unessecary nulls and return statements
 
 assignParent(root);
-console.log("***********************************");
 root.view();
 
 
@@ -280,17 +282,14 @@ function removeNulls(current){
 
 
 function inlineSwapping(current){
-  console.log(current);
 
   var outTree=new Tree(current.value);
   if(inline.indexOf(outTree.value)!=-1){
     for(var i=current.children.length-1;i>=0;i--){
-      console.log(i);
       outTree.add(current.children[i]);
     }
   }else{
     for(var i=0;i<current.children.length;i++){
-      console.log(i);
       outTree.add(current.children[i]);
     }
   }
@@ -314,7 +313,6 @@ function treeOrdering(current){
 
   for(var i=0;i<current.children.length;i++){
     if(inline.indexOf(current.children[i].value)!=-1){
-      console.log("Operator");
       var temp=current.children[i];
       while(temp.children.length<2){
         temp.add(stack.pop());
@@ -327,7 +325,7 @@ function treeOrdering(current){
 
 for(var i=0;i<stack.length;i++){
   outTree.add(stack[i]);
-  stack[i].view();
+
 }
 
   return outTree;
@@ -405,7 +403,7 @@ for(var i=0;i<stack.length;i++){
   for(var i=0;i<outTree.children.length;i++){
     outTree.children[i]=convertStacktoTree(outTree.children[i]);
   }
-  outTree.view();
+  //outTree.view();
   return outTree;
 }
 
