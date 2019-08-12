@@ -45,10 +45,21 @@ c(k):={
 
 `;
 
-
+var code="stdio.println(1+2*3)";
+var code=`
+stdio.println(
+  if(true){
+    0+2;
+  }else{
+    1;
+  });
+`;
 
 var parsedCode=parser(code);
 parsedCode.view();
+
+eval(parsedCode);
+
 
 
 //var eval=eval(parsedCode);
