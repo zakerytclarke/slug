@@ -95,4 +95,32 @@ module.exports=function(code){
 
   }
 
+
+  function findObj(current,value){
+    var temp=current;
+  }
+
+  function similarity(obj1,obj2){
+    var numSimilar=0;
+    if(obj1.value==obj2.value){
+      numSimilar++;
+    }
+
+    if(obj1.children.length>obj2.children.length){
+      for(var i=0;i<obj1.children.length;i++){
+        if(obj2[i]!=null){
+          numSimilar+=similarity(obj1.children[i],obj2.children[i]);
+        }
+      }
+    }else{
+      for(var i=0;i<obj1.children.length;i++){
+        if(obj2[i]!=null){
+          numSimilar+=similarity(obj1.children[i],obj2.children[i]);
+        }
+      }
+    }
+
+  }
+
+
 }

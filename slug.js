@@ -45,7 +45,6 @@ c(k):={
 
 `;
 
-var code="stdio.println(1+2*3)";
 var code=`
 stdio.println(
   if(true){
@@ -53,6 +52,17 @@ stdio.println(
   }else{
     1;
   });
+`;
+
+var code="stdio.println(1+2*3)";
+
+var code=`
+  stdio.println(plusOne(10));
+
+  plusOne(n):={
+    n+1;
+  }
+
 `;
 
 var parsedCode=parser(code);
