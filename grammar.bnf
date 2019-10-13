@@ -1,0 +1,5 @@
+number -> [0-9]:+
+
+
+sumTerm -> number "+" number | number "-" number
+factorTerm -> number "*" number | number "/" number

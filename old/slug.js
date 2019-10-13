@@ -53,7 +53,7 @@ stdio.println(
     1;
   });
 `;
-
+/*
 var code="stdio.println(1+2*3)";
 
 var code=`
@@ -64,7 +64,7 @@ var code=`
   }
 
 `;
-
+*/
 var parsedCode=parser(code);
 parsedCode.view();
 
