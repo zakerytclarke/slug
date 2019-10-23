@@ -1,1 +1,1 @@
-((λtrue ((λfalse (false a b)) (λx (λy y)))) (λx (λy x)))
+((λtrue ((λfalse (print (* 3 (true readLn input)))) (λx (λy y)))) (λx (λy x)))
