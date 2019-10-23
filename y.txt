@@ -1,0 +1,83 @@
+Factorial Expansions Using Y Combinator
+
+fact:=(\n (if (= n 1) 1 (* n (fact (- n 1)))))
+
+factPartial:=(\fact (\n (if (= n 1) 1 (* n (fact (- n 1))))))
+
+
+Y:=(\g (\x (g (x x))) (\x (g (x x))))
+
+
+factY:=(Y factPartial)
+Expanded:
+(\g (\x (g (x x))) (\x (g (x x)))) (\fact (\n (if (= n 1) 1 (* n (fact (- n 1))))))
+
+Substitute g
+(\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))
+Substitute x
+((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) ((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))))
+Substitute fact
+factY:=(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1)))))
+
+
+factY 3:= (\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) 3
+
+Substitute 3 for n
+(if (= 3 1) 1 (* 3 (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 3 1))))
+
+Evaluate if 3 != 1 so choose second argument
+(* 3 (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 3 1)))
+
+Result = 3 * Sub Expression
+(((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 3 1))
+Remove Wrapping Parentheses
+((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 3 1)
+Substitute for x
+(((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) ((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))))) (- 3 1)
+Substitute for fact
+(((\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) )) (- 3 1)
+Remove Unnesesary Parentheses
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) (- 3 1)
+For Simplicity, evaluate 3-1=2
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) 2
+
+
+Notice how similar the substitution step for n=3 and n=2 are
+N=3     (\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) 3
+N=2     (\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) 2
+
+Do Same Steps as before
+Substitute 2 for n
+(if (= 2 1) 1 (* 2 (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 2 1))))
+
+Evaluate if 3 != 1 so choose second argument
+(* 3 (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 2 1)))
+
+Result = 2 * Sub Expression
+(((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 2 1))
+Remove Wrapping Parentheses
+((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 2 1)
+Substitute for x
+(((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) ((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))))) (- 2 1)
+Substitute for fact
+(((\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) )) (- 2 1)
+Remove Unnesesary Parentheses
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) (- 2 1)
+For Simplicity, evaluate 2-1=1
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) 1
+
+Now, for n=1 base case
+
+Substitue n=1
+(if (= 1 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- 1 1))))
+
+Since 1==1, return first argument
+
+Result=1
+
+Nested Results
+Result = 3 * Sub Expression
+Result = 2 * Sub Expression
+Result = 1 * Sub Expression
+Result=3*2*1==6
+(* 3 (* 2 1))

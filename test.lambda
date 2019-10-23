@@ -1,1 +1,1 @@
-(\true (true a b))
+((\true ((\false (true a b)) (\x (\y y )))),(\x (\y x)));

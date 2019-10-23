@@ -1,0 +1,24 @@
+((\true ((\false (true a b)) (\x (\y y )))),(\x (\y x)));
+
+fact:=(\fact (\n (if (= n 1) 1 (* n (fact (- n 1))))))
+
+(\g (\x (g (x x))) (\x (g (x x))))
+
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1)))))
+
+
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1)))))
+
+
+(\n (if (= n 1) 1 (* n (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))) 2
+
+
+(if (= 2 1) 1 (* 2 (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1))))
+
+(* 2 (((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1)))
+
+2*Result
+
+((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x)))) (- n 1)
+
+(((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) ((\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))) (\x ((\fact (\n (if (= n 1) 1 (* n (fact (- n 1)))))) (x x))))) ) (- n 1)

@@ -1,0 +1,13 @@
+(Complex a b) + (Complex c d) = (Complex (a+c) (b+d))
+(Complex a b) + x = (Complex (a+x) b)
+x + (Complex a b) = (Complex (a+x) b)
+
+
+real (Complex a b) = a
+
+
+fact:=(\n )
+
+
+real:=(\Complex (\a (\b a)))
+Complex:=(\a (\b ))

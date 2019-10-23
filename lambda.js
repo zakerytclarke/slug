@@ -1,95 +1,60 @@
-var fs=require("fs");
-var txt=fs.readFileSync("./test.lambda","UTF-8");
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
 
-console.log(txt);
+fs=require("fs");
 
-txt=txt.split("");
+var str=fs.readFileSync("./index.slc","UTF-8");
+console.log(str);
 
-for(var i=0;i<txt.length;i++){
-  if(txt[i]=="("){
-    if(txt[i+1]&&txt[i+1]!="("){
-      txt[i]='["';
+str=str.replaceAll('(','["').replaceAll(')','"]').replaceAll(' ','","');
+str=str.replaceAll('["[',"[[").replaceAll(',"[',',[').replaceAll(']",','],').replaceAll(']"]',"]]").replaceAll(']"]',"]]");
+str=str.replaceAll("\\","λ");
+
+code=JSON.parse(str);
+var result=eval(code);
+
+console.log(result);
+
+function eval(arr){
+  var current=arr;
+  console.log(current);
+  if(current.constructor===Array&&arr[0][0][0]=="λ"){
+    if(current.length==2){
+      current=substitute(arr[0][1],arr[0][0].replaceAll("λ",""),arr[1]);
     }else{
-      txt[i]='[';
+      current[0]=substitute(arr[0][1],arr[0][0].replaceAll("λ",""),arr[1]);
+      current.splice(1,1)
     }
-
+  }else{
+    return current;
   }
-  if(txt[i]==" "){
-    if(txt[i+1]&&txt[i+1]!="("){
-      txt[i]='","';
-    }else{
-      txt[i]='",';
-    }
-  }
-  if(txt[i]==")"){
-    if(txt[i+1]&&txt[i+1]!=")"){
-      txt[i]=']';
-    }else{
-      txt[i]='"]';
-    }
+  current=eval(current);
 
-  }
-
+  return current;
 }
-
-txt=txt.reduce(function(acc,current){
-  return acc.concat(current);
-});
-
-console.log(txt);
-
-var code=[["\\true",["true","a","b"]],["\\x",["\\y","x"]]];
-var code=[["\\true",[["\\false",["true","a","b"]],["\\x",["\\y","y"]]]],["\\x",["\\y","x"]]];
-
-var out=evalStrict(code);
-console.log(out);
-
-function evalStrict(code){
-  console.log("");
-  var current=code[0];
-
-  if(code[0]&&code[0][0]&&code[0][0][0]=="\\"){//Substitution
-    var variable=code[0][0].substr(1);
-    var value=code[1];
-
-    var code=substitute(code,variable,value);
-    console.log(JSON.stringify(code));// Reduce Tree
-    code.splice(1,1);
-
-    if(code.length<=1){
-      return evalStrict(code[0][1]);
-    }else{//More Variables to Substitute
-      code[0]=code[0][1];
-      return evalStrict(code);
-    }
-    console.log(JSON.stringify(code));// Reduce Tree
-
-  }
-  if(code[0]&&code[0][0]){
-    return code;
-  }
-}
-
-var temp=["a","b","c"];
-temp=substitute(temp,"a","1");
-
-
-
 
 
 function substitute(arr,variable,value){
   if(arr.constructor===Array){
-    var out=[];
-    for(var i=0;i<arr.length;i++){
-      out.push(substitute(arr[i],variable,value));
+    if(arr[0]=="λ"+variable){//Contains Lambda with same variable
+      return arr;
     }
-    return out;
-  }
-  //Individual String
-  if(arr==variable){
-    return value;
-  }else{
-    return arr;
+    for(var i=0;i<arr.length;i++){
+      if(arr[i].constructor===Array){
+        arr[i]==substitute(arr[i],variable,value);
+      }else{
+        if(arr[i]==variable){//Substitute value
+          arr[i]=value;
+        }//Otherwise leave alone
+      }
+    }
+  }else{//Single Value
+    if(arr==variable){
+      return value;
+    }
   }
 
+  return arr;
 }
